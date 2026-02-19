@@ -48,8 +48,8 @@ from aiohttp import web
 API_TOKEN = '8248530120:AAFMcGxFs3UMP014Y6iiWzyXzE--_-mvadM'
 
 # Твой личный ID (узнай его у @userinfobot)
-MY_PERSONAL_ID = 783634711
-MY_PERSONAL_ID1 = 8570806119
+#MY_PERSONAL_ID = 783634711
+RECIPIENTS = [783634711, 8570806119] 
 # Список групп и топиков
 # { ID_группы: ID_топика }
 ALLOWED_SOURCES = {
@@ -62,8 +62,31 @@ dp = Dispatcher()
 # Функция-заглушка для Render (чтобы бот не засыпал)
 async def handle_health(request):
     return web.Response(text="Бот работает!")
-
 @dp.message(F.photo)
+async def handle_photos(message: types.Message):
+    chat_id = message.chat.id
+    thread_id = message.message_thread_id
+
+    if chat_id in ALLOWED_SOURCES and thread_id == ALLOWED_SOURCES[chat_id]:
+        group_name = message.chat.title
+        photo_id = message.photo[-1].file_id
+        caption_text = f"Новое фото из группы: {group_name}"
+        
+        # Цикл для рассылки всем получателям
+        for user_id in RECIPIENTS:
+            try:
+                await bot.send_photo(
+                    chat_id=user_id,
+                    photo=photo_id,
+                    caption=caption_text
+                )
+            except Exception as e:
+                # Если кто-то не запустил бота, выведется ошибка только для него
+                print(f"Не удалось отправить пользователю {user_id}: {e}")
+                
+
+
+"""@dp.message(F.photo)
 async def handle_photos(message: types.Message):
     chat_id = message.chat.id
     thread_id = message.message_thread_id
@@ -89,7 +112,7 @@ async def handle_photos(message: types.Message):
                 caption=f"{group_name}"
             )
         except Exception as e:
-            print(f"Ошибка отправки: {e}. Возможно, вы не написали /start боту в личку.")
+            print(f"Ошибка отправки: {e}. Возможно, вы не написали /start боту в личку.")"""
 
 async def main():
     # Настройка веб-сервера для Render (порт 8080)
