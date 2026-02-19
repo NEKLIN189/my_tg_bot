@@ -49,7 +49,7 @@ API_TOKEN = '8248530120:AAFMcGxFs3UMP014Y6iiWzyXzE--_-mvadM'
 
 # Твой личный ID (узнай его у @userinfobot)
 #MY_PERSONAL_ID = 783634711
-RECIPIENTS = [783634711, 8570806119] 
+RECIPIENTS = [783634711, 8570806119, 1013917013] 
 # Список групп и топиков
 # { ID_группы: ID_топика }
 ALLOWED_SOURCES = {
