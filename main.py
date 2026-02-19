@@ -70,7 +70,7 @@ async def handle_photos(message: types.Message):
     if chat_id in ALLOWED_SOURCES and thread_id == ALLOWED_SOURCES[chat_id]:
         group_name = message.chat.title
         photo_id = message.photo[-1].file_id
-        caption_text = f"Новое фото из группы: {group_name}"
+        caption_text = f"{group_name}"
         
         # Цикл для рассылки всем получателям
         for user_id in RECIPIENTS:
