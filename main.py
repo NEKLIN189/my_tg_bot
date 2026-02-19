@@ -78,7 +78,7 @@ async def handle_photos(message: types.Message):
             await bot.send_photo(
                 chat_id=MY_PERSONAL_ID,
                 photo=message.photo[-1].file_id,
-                caption=f"Новое фото из группы: {group_name}"
+                caption=f"{group_name}"
             )
         except Exception as e:
             print(f"Ошибка отправки: {e}. Возможно, вы не написали /start боту в личку.")
