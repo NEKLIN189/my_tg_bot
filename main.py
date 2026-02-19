@@ -1,3 +1,4 @@
+"""
 import asyncio
 from aiogram import Bot, Dispatcher, types, F
 
@@ -35,4 +36,65 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-  
+  """
+
+
+
+import asyncio
+from aiogram import Bot, Dispatcher, types, F
+from aiohttp import web
+
+# --- НАСТРОЙКИ ---
+API_TOKEN = '8248530120:AAFMcGxFs3UMP014Y6iiWzyXzE--_-mvadM'
+
+# Твой личный ID (узнай его у @userinfobot)
+MY_PERSONAL_ID = 783634711  
+
+# Список групп и топиков
+# { ID_группы: ID_топика }
+ALLOWED_SOURCES = {
+    -1003412963252: 162,  # Первая группа
+}
+
+bot = Bot(token=API_TOKEN)
+dp = Dispatcher()
+
+# Функция-заглушка для Render (чтобы бот не засыпал)
+async def handle_health(request):
+    return web.Response(text="Бот работает!")
+
+@dp.message(F.photo)
+async def handle_photos(message: types.Message):
+    chat_id = message.chat.id
+    thread_id = message.message_thread_id
+
+    # Проверяем, пришло ли фото из нужной группы и нужного топика
+    if chat_id in ALLOWED_SOURCES and thread_id == ALLOWED_SOURCES[chat_id]:
+        # Название группы для подписи
+        group_name = message.chat.title
+        
+        # Отправляем фото тебе в личку
+        try:
+            await bot.send_photo(
+                chat_id=MY_PERSONAL_ID,
+                photo=message.photo[-1].file_id,
+                caption=f"Новое фото из группы: {group_name}"
+            )
+        except Exception as e:
+            print(f"Ошибка отправки: {e}. Возможно, вы не написали /start боту в личку.")
+
+async def main():
+    # Настройка веб-сервера для Render (порт 8080)
+    app = web.Application()
+    app.router.add_get("/", handle_health)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 8080)
+    asyncio.create_task(site.start())
+
+    print("Бот запущен и готов к работе!")
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+    
