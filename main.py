@@ -48,8 +48,8 @@ from aiohttp import web
 API_TOKEN = '8248530120:AAFMcGxFs3UMP014Y6iiWzyXzE--_-mvadM'
 
 # Твой личный ID (узнай его у @userinfobot)
-MY_PERSONAL_ID = 783634711, 8570806119  
-
+MY_PERSONAL_ID = 783634711
+MY_PERSONAL_ID1 = 8570806119
 # Список групп и топиков
 # { ID_группы: ID_топика }
 ALLOWED_SOURCES = {
@@ -77,6 +77,14 @@ async def handle_photos(message: types.Message):
         try:
             await bot.send_photo(
                 chat_id=MY_PERSONAL_ID,
+                photo=message.photo[-1].file_id,
+                caption=f"{group_name}"
+            )
+        except Exception as e:
+            print(f"Ошибка отправки: {e}. Возможно, вы не написали /start боту в личку.")
+        try:
+            await bot.send_photo(
+                chat_id=MY_PERSONAL_ID1,
                 photo=message.photo[-1].file_id,
                 caption=f"{group_name}"
             )
